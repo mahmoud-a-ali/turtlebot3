@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<launch>
+  <arg name="vlp_topic" default="mid/points" />
+  <arg name="laser_topic" default="scan" />
+
+
+  <!-- Convert the pointcloud2 to laserscan -->
+  <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan">
+    <param name="min_height" value="0.1"/>
+    <param name="max_height" value="1"/>
+    <param name="range_min" value="0.12"/>
+    <param name="range_max" value="3.5"/>
+    <param name="angle_max" value="6.283"/>
+    <param name="angle_min" value="0.0"/>
+    <param name="use_inf" value="true"/>
+    <!-- <param name="use_inf" value="false"/> -->
+    <param name="target_frame" value="velodyne"/>
+    <param name="angle_increment" value=".0175"/>
+
+    <remap from="cloud_in" to="$(arg vlp_topic)"/>
+    <remap from="scan" to="$(arg laser_topic)"/>
+  </node>
+
+  <node pkg="tf" type="static_transform_publisher" name="world_map" args="0 0 0 0 0 0 1 /world /map 100" />
+  <node pkg="tf" type="static_transform_publisher" name="world_odom" args="0 0 0 0 0 0 1 /world /odom 100" />
+
+</launch>
+
